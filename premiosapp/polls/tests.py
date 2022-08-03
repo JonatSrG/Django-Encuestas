@@ -11,3 +11,11 @@ class QuestionModelTests(TestCase):
         time = timezone.now() + datetime.timedelta(day=30)
         future_question = Question(question_text="¿?", pub_date=time)
         self.assertIs(future_question.was_published_recently(), False)
+
+class QuiestionIndexViewTest(TestCase):
+
+    def test_no_question(self):
+        response = self.client.get(reverse("polls:index"))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "No existe ninguna encuesta")
+        self.assertQuerysetEqual(response.context["latest_question_list"], [])
